@@ -42,11 +42,10 @@ st.write("")
 st.markdown("""
 **AVISOS**  
 - Apenas arquivos CSV e XLSX são permitidos;
-- O formato aceito pelos apps costumam ser o CSV, logo, o resultado do tratamento é um arquivo CSV;
+- O formato aceito pelos apps costumam ser o CSV. Logo, o resultado do tratamento é um arquivo CSV;
 - O nome das colunas a serem alteradas precisam ser digitados **exatamente** como está na planilha;
-- Ao escolher a opção 1, por padrão, o caractere a ser adicionado será \'A\';
-- **Sempre** inserir as colunas de data na opção 2, pois elas vêm desconfiguradas e ainda não foi realizado o ajuste no código;
-- O formato utf-8 já é aplicado automaticamente.
+- Ao escolher a opção Adicionar Caractere, por padrão, o caractere a ser adicionado será \'A\';
+- O formato UTF-8 já é aplicado automaticamente.
 """)
 
 upload = st.file_uploader("Insira o arquivo para análise", type=["xlsx", "csv"])
