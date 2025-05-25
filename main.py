@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from utils import carregar_arquivo, download_arquivo_tratado
 
 def converter_data(df):
     for col in df.columns:
@@ -36,16 +37,18 @@ def converter_valor(df):
     return df
 
 
-st.title("Tratamento de Erro de Planilha")
+st.title("Tratamento de Erros em Planilha")
 st.subheader("Correção de erros mais comuns ao tratar planilhas. Para outros, é preciso verificar manualmente.")
 st.write("")
 st.markdown("""
 **REGRAS DE USO**  
-- Apenas arquivos CSV e XLSX são permitidos;
-- O formato aceito pelos apps costuma ser o CSV. Logo, o resultado do tratamento é um arquivo CSV;
-- O nome das colunas a serem alteradas precisam ser digitados **exatamente** como está na planilha;
+- Apenas arquivos .csv e .xlsx são aceitos;
+- O formato aceito pelos apps costuma ser o .csv. Logo, o resultado do tratamento é um arquivo .csv;
+- O nome das colunas a serem alteradas precisam ser digitados **exatamente** como na planilha;
 - Ao escolher a opção Adicionar Caractere, por padrão, o caractere a ser adicionado será \'A\';
+- Datas são transformadas em texto automaticamente.
 - O formato UTF-8 já é aplicado automaticamente.
+- A formatação das colunas com números na tabela do programa não estão formatadas. A formatação correta pode ser vista no arquivo .csv exportado.
 """)
 
 upload = st.file_uploader("Insira o arquivo para análise", type=["xlsx", "csv"])
@@ -53,12 +56,7 @@ upload = st.file_uploader("Insira o arquivo para análise", type=["xlsx", "csv"]
 
 df = None
 if upload is not None:   # Se upload não estiver vazio, transforma arquivo em df
-    if upload.name.endswith("xlsx"):
-        df = pd.read_excel(upload, engine="openpyxl")
-    else:
-        df = pd.read_csv(upload)
-    
-    # Chama função de ajuste de data
+    df = carregar_arquivo(upload)
     df = converter_data(df)
     df = converter_valor(df)
 
@@ -70,10 +68,7 @@ if operacao == "Adicionar caractere no início da coluna":
         if coluna_a_alterar in df.columns:
             df[coluna_a_alterar] = df[coluna_a_alterar].astype(str)
             df[coluna_a_alterar] = "A" + df[coluna_a_alterar]
-
-            st.dataframe(df)
-
-            st.download_button("Baixar arquivo CSV", df.to_csv(index=False).encode('utf-8'), file_name="PlanilhaAlterada.csv", mime="text/csv")
+            download_arquivo_tratado(df)
         else:
             st.error("Coluna não encontrada.")
 
@@ -82,10 +77,7 @@ elif operacao == "Transformar coluna em texto":
     if df is not None:
         if coluna_a_alterar in df.columns:
             df[coluna_a_alterar] = df[coluna_a_alterar].astype(str)
-
-            st.dataframe(df)
-            
-            st.download_button("Baixar arquivo CSV", df.to_csv(index=False).encode('utf-8'), file_name="PlanilhaAlterada.csv", mime="text/csv")
+            download_arquivo_tratado(df)
         else:
             st.error("Coluna não encontrada.")
 
@@ -95,11 +87,7 @@ elif operacao == "Dividir planilha (arquivo grande)":
         metade1 = df.iloc[:meio]
         metade2 = df.iloc[meio:]
 
-        st.dataframe(metade1)
-        st.dataframe(metade2)
-
-        st.download_button("Baixar Parte 1", metade1.to_csv(index=False).encode('utf-8'), file_name="metade1.csv", mime="text/csv")
-        st.download_button("Baixar Parte 2", metade2.to_csv(index=False).encode('utf-8'), file_name="metade2.csv", mime="text/csv")
+        download_arquivo_tratado(df, op="Dividir planilha (arquivo grande)", partes=[metade1, metade2])
 
 elif operacao == "Filtrar planilha por mês/ano":
     coluna_a_filtrar = st.text_input("Insira o nome da coluna que deseja realizar o filtro")
@@ -108,26 +96,18 @@ elif operacao == "Filtrar planilha por mês/ano":
             try:
                 # retorna "na" caso conversão não funcione
                 df[coluna_a_filtrar] = pd.to_datetime(df[coluna_a_filtrar], format="%d/%m/%Y", errors="coerce")
-                mes_a_filtrar = st.text_input("Insira o mês a ser filtrado [1 a 12]")
-                ano_a_filtrar = st.text_input("Insira o ano a ser filtrado")
+                mes_a_filtrar = st.multiselect("Insira o mês a ser filtrado:", list(range(1, 13)))
+                ano_a_filtrar = st.text_input("Insira o ano a ser filtrado:")
+                ano_a_filtrar = int(ano_a_filtrar)
 
                 if not mes_a_filtrar or not ano_a_filtrar:
                     st.error("Insira mês e ano.")
 
-                mes_a_filtrar = int(mes_a_filtrar)
-                ano_a_filtrar = int(ano_a_filtrar)
+                # df apenas com as linhas que possuem o mês/ano escolhido
+                df = df[(df[coluna_a_filtrar].dt.month.isin(mes_a_filtrar)) & (df[coluna_a_filtrar].dt.year == ano_a_filtrar)] 
+                df[coluna_a_filtrar] = df[coluna_a_filtrar].dt.strftime('%d/%m/%Y')
 
-                if mes_a_filtrar < 1 or mes_a_filtrar > 12:
-                  st.error("Mês inválido.")
-
-                else:
-                    # df apenas com as linhas que possuem o mês/ano escolhido
-                    df = df[(df[coluna_a_filtrar].dt.month == mes_a_filtrar) & (df[coluna_a_filtrar].dt.year == ano_a_filtrar)] 
-                    df[coluna_a_filtrar] = df[coluna_a_filtrar].dt.strftime('%d/%m/%Y')
-
-                    st.dataframe(df)
-
-                    st.download_button("Baixar arquivo CSV filtrado", df.to_csv(index=False).encode('utf-8'),file_name="PlanilhaFiltrada.csv", mime="text/csv")
+                download_arquivo_tratado(df)
 
             except Exception:
                 pass
