@@ -1,0 +1,33 @@
+/* body {
+    background-color: black;
+    color: #ffff;
+} */
+
+/* Fundo do conteúdo principal */
+.stApp {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+/* Texto */
+h1, h2, h3, h4, h5, h6, p, span, label {
+    color: white;
+}
+
+/* Sidebar */
+/* section[data-testid="stSidebar"] {
+    background-color: #333333;
+} */
+
+h1 {
+    font-size: 32px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 17px !important;
+    text-align: center;
+    background-color: #464646;
+    padding: 6px 16px;
+    border-radius: 8px;
+}
