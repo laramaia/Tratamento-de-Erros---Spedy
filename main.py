@@ -37,8 +37,13 @@ def converter_valor(df):
     return df
 
 
+with open("style.css") as f:
+    css = f.read()
+
+st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
 st.title("Tratamento de Erros em Planilha")
-st.subheader("Correção de erros mais comuns ao tratar planilhas. Para outros, é preciso verificar manualmente.")
+st.subheader("Correção de erros mais comuns ao tratar planilhas.")
 st.write("")
 st.markdown("""
 **REGRAS DE USO**  
@@ -97,8 +102,7 @@ elif operacao == "Filtrar planilha por mês/ano":
                 # retorna "na" caso conversão não funcione
                 df[coluna_a_filtrar] = pd.to_datetime(df[coluna_a_filtrar], format="%d/%m/%Y", errors="coerce")
                 mes_a_filtrar = st.multiselect("Insira o mês a ser filtrado:", list(range(1, 13)))
-                ano_a_filtrar = st.text_input("Insira o ano a ser filtrado:")
-                ano_a_filtrar = int(ano_a_filtrar)
+                ano_a_filtrar = st.slider("Ano a ser filtrado:", 2020, 2025, 2025)
 
                 if not mes_a_filtrar or not ano_a_filtrar:
                     st.error("Insira mês e ano.")
