@@ -56,7 +56,6 @@ st.markdown("""
 - A formatação das colunas com números na tabela do programa não estão formatadas. A formatação correta pode ser vista no arquivo .csv exportado.
 """)
 
-st.markdown("**Arraste o arquivo ou clique para selecionar**")
 upload = st.file_uploader("", type=["xlsx", "csv"])
 
 df = None
