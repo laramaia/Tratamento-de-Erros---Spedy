@@ -28,3 +28,5 @@ Durante minha atuação como Analista de Suporte na Spedy, identifiquei padrões
 - Streamlit
 - Pandas
 - CSS
+
+🔗 [Acesse o app online](https://tratamento-de-planilha.streamlit.app/)
