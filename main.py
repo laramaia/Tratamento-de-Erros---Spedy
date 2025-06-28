@@ -48,7 +48,7 @@ st.write("")
 st.markdown("""
 **REGRAS DE USO**  
 - Apenas arquivos .csv e .xlsx são aceitos;
-- O formato aceito pelos apps costuma ser o .csv. Logo, o resultado do tratamento é um arquivo .csv;
+- O resultado do tratamento é um arquivo .csv;
 - O nome das colunas a serem alteradas precisam ser digitados **exatamente** como na planilha;
 - Ao escolher a opção Adicionar Caractere, por padrão, o caractere a ser adicionado será \'A\';
 - Datas são transformadas em texto automaticamente.
@@ -56,8 +56,8 @@ st.markdown("""
 - A formatação das colunas com números na tabela do programa não estão formatadas. A formatação correta pode ser vista no arquivo .csv exportado.
 """)
 
-upload = st.file_uploader("Insira o arquivo para análise", type=["xlsx", "csv"])
-# TODO: alterar todas as colunas do tipo data para string
+st.markdown("**Arraste o arquivo ou clique para selecionar**")
+upload = st.file_uploader("", type=["xlsx", "csv"])
 
 df = None
 if upload is not None:   # Se upload não estiver vazio, transforma arquivo em df
