@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="#sobre-o-projeto">Sobre o Projeto</a> |
-  <a href="#funcionalidades">Funcionalidades</a> |
+  <a href="#funcionalidades-disponiveis-aos-usuarios">Funcionalidades</a> |
   <a href="#tecnologias">Tecnologias</a>
 </p>
 
@@ -27,3 +27,4 @@ Durante minha atuação como Analista de Suporte na Spedy, identifiquei padrões
 - Python
 - Streamlit
 - Pandas
+- CSS
